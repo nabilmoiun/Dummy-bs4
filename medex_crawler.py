@@ -59,26 +59,29 @@ query = json.dumps(
         }
     }
     )
+
 result = elastic_search.search(index='medex_drugs', ignore=400, body=query)
 document = elastic_search.get(index='medex_drugs', id=key)
 print(document)
 content = document['_source']
+
 for k, v in content.items():
     print(k, v)
+    
 # print(result)
 from_page = 1
 to_page = 2
 medex_home_url = 'https://medex.com.bd/brands?page='
 
-# for page in range(from_page, to_page):
-#     print("page : ", page)
-#     link_url = medex_home_url + str(page)
-#     link_url_open = urlopen(link_url).read()
-#     raw_links = bs(link_url_open, 'html.parser')
-#     links = raw_links.find_all('a', class_='hoverable-block')
-#     id = 1
-#     for link in links:
-#         id += 1
-#         content = get_a_drug_information(link.get('href'))
-#         dump_into_elasticsearch(content[1], "{id}".format(id=content[0]))
+for page in range(from_page, to_page):
+    print("page : ", page)
+    link_url = medex_home_url + str(page)
+    link_url_open = urlopen(link_url).read()
+    raw_links = bs(link_url_open, 'html.parser')
+    links = raw_links.find_all('a', class_='hoverable-block')
+    id = 1
+    for link in links:
+        id += 1
+        content = get_a_drug_information(link.get('href'))
+        dump_into_elasticsearch(content[1], "{id}".format(id=content[0]))
 
